@@ -15,6 +15,7 @@ var Equalizer = /*#__PURE__*/function () {
     this.container = el;
     this.children = this.getChildren();
     this.event = new Event('equalized');
+    window.equalizing = false;
     attach(window, 'resize', function () {
       return _this.matchHeight();
     }, 500);
@@ -60,7 +61,14 @@ var Equalizer = /*#__PURE__*/function () {
           return child.style.height = _this3.height + 'px';
         });
       });
-      window.dispatchEvent(this.event);
+
+      if (window.equalizing === false) {
+        window.equalizing = true;
+        window.dispatchEvent(this.event);
+        setTimeout(function () {
+          return window.equalizing = false;
+        }, 500);
+      }
     }
   }, {
     key: "update",

@@ -5,6 +5,7 @@ class Equalizer {
     this.container = el;
     this.children = this.getChildren();
     this.event = new Event('equalized');
+    window.equalizing = false;
 
     attach(window, 'resize', () => this.matchHeight(), 500);
   }
@@ -42,12 +43,16 @@ class Equalizer {
       groupArr.forEach((child) => child.style.height = this.height + 'px');
     });
 
-    window.dispatchEvent(this.event);
+    if (window.equalizing === false) {
+      window.equalizing = true;
+      window.dispatchEvent(this.event);
+      setTimeout(() => window.equalizing = false, 500);
+    }
   }
 
   update() {
-  	this.children = this.getChildren();
-  	this.matchHeight();
+    this.children = this.getChildren();
+    this.matchHeight();
   }
 }
 
