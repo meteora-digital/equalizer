@@ -15,7 +15,7 @@ var Equalizer = /*#__PURE__*/function () {
     this.container = el;
     this.children = this.getChildren();
     this.event = new Event('equalized');
-    window.equalizing = false;
+    window.equalizing = null;
     attach(window, 'resize', function () {
       return _this.matchHeight();
     }, 500);
@@ -61,14 +61,10 @@ var Equalizer = /*#__PURE__*/function () {
           return child.style.height = _this3.height + 'px';
         });
       });
-
-      if (window.equalizing === false) {
-        window.equalizing = true;
-        window.dispatchEvent(this.event);
-        setTimeout(function () {
-          return window.equalizing = false;
-        }, 500);
-      }
+      clearTimeout(window.equalizing);
+      window.equalizing = setTimeout(function () {
+        window.dispatchEvent(_this3.event);
+      }, 100);
     }
   }, {
     key: "update",
