@@ -17,7 +17,7 @@
   "author": "Emmanuel Davies",
   "license": "MIT",
   "dependencies": {
-    "@meteora-digital/helpers": "^1.1.0"
+    "@meteora-digital/helpers": "latest"
   },
   "devDependencies": {
     "@babel/core": "^7.10.2",
