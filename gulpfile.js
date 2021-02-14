@@ -19,7 +19,7 @@ exports.default = function(done) {
     .pipe(babel({
     	presets: [
     	['@babel/env', {
-    		modules: false
+    		// modules: false
     	}]
     	]
     }))

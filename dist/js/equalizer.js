@@ -1,10 +1,17 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
+
+var _helpers = require("@meteora-digital/helpers");
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-import { attach, Event, nodeArray } from '@meteora-digital/helpers';
 
 var Equalizer = /*#__PURE__*/function () {
   function Equalizer(el) {
@@ -14,9 +21,9 @@ var Equalizer = /*#__PURE__*/function () {
 
     this.container = el;
     this.children = this.getChildren();
-    this.event = new Event('equalized');
+    this.event = new _helpers.Event('equalized');
     window.equalizing = null;
-    attach(window, 'resize', function () {
+    (0, _helpers.attach)(window, 'resize', function () {
       return _this.matchHeight();
     }, 500);
   }
@@ -46,13 +53,13 @@ var Equalizer = /*#__PURE__*/function () {
 
       // set height to auto so it can be adjusted
       this.children.forEach(function (group) {
-        nodeArray(group).forEach(function (child) {
+        (0, _helpers.nodeArray)(group).forEach(function (child) {
           child.style.height = 'auto';
         });
       }); // now match all their heights
 
       this.children.forEach(function (group) {
-        var groupArr = nodeArray(group);
+        var groupArr = (0, _helpers.nodeArray)(group);
         _this3.height = 0;
         groupArr.forEach(function (child) {
           if (child.clientHeight > _this3.height) _this3.height = child.clientHeight;
@@ -77,7 +84,7 @@ var Equalizer = /*#__PURE__*/function () {
   return Equalizer;
 }();
 
-export default Equalizer; // ======================================================
+var _default = Equalizer; // ======================================================
 // JavaScript Usage
 // ======================================================
 // import Equalizer from './equalizer';
@@ -103,3 +110,5 @@ export default Equalizer; // ===================================================
 //      <div data-equalize-watch="selector2"></div>
 //   </div>
 // </section>
+
+exports["default"] = _default;
