@@ -1,50 +1,83 @@
-import {attach, Event, nodeArray} from '@meteora-digital/helpers';
+import { attach, Event, nodeArray, objectAssign, offset } from '@meteora-digital/helpers';
 
 class Equalizer {
-  constructor(el) {
+  constructor(el, options = {}) {
     this.container = el;
     this.children = this.getChildren();
+    this.rows = this.getRows();
     this.event = new Event('equalized');
     window.equalizing = null;
 
-    attach(window, 'resize', () => this.matchHeight(), 500);
+    this.settings = objectAssign({
+      rows: false,
+    }, options);
+
+
+    attach(window, 'resize', () => this.equalize(), 500);
+  }
+
+  equalize() {
+    this.matchHeight((this.settings.rows) ? this.rows : this.children);
   }
 
   getChildren() {
-    let childArray = [];
+    this.children = {};
 
     try {
-      let targetArray = this.container.getAttribute('data-equalize').split(',');
-      targetArray.forEach((id) => childArray.push(this.container.querySelectorAll(`[data-equalize-watch="${id}"]`)));
-    } catch(err) {
-      childArray.push(this.container.querySelectorAll(`[data-equalize-watch]`));
+      this.container.getAttribute('data-equalize').split(',').forEach((id) => this.children[id] = nodeArray(this.container.querySelectorAll(`[data-equalize-watch="${id}"]`)));
+    }catch (err) {
+      this.children.main = nodeArray(this.container.querySelectorAll('[data-equalize-watch]'));
     }
 
-    return childArray;
+    return this.children;
   }
 
-  matchHeight() {
-    // set height to auto so it can be adjusted
-    this.children.forEach((group) => {
-      nodeArray(group).forEach((child) => {
-        child.style.height = 'auto';
-      });
-    });
+  getRows() {
+    this.rows = {};
+    this.matchHeight(this.children);
 
-    // now match all their heights
-    this.children.forEach((group) => {
-      let groupArr = nodeArray(group);
+    let offsetY = 0;
+
+    for (let group in this.children) {
+      this.children[group].forEach((child) => {
+        offsetY = offset(child).y;
+        (this.rows[offsetY]) ? this.rows[offsetY].push(child) : this.rows[offsetY] = [child];
+      });
+    }
+
+    return this.rows;
+  }
+
+  matchHeight(children = false) {
+    clearTimeout(window.equalizing);
+
+    // Check to see if we passed in some children or not
+    if (children === false) children = this.children;
+
+    // loop through all the child groups
+    for (let group in children) {
+      // initialise the height at 0 for each group
       this.height = 0;
 
-      groupArr.forEach((child) => {
+      // set height to auto so it can be adjusted
+      children[group].forEach((child) => {
+        child.style.height = 'auto';
+      });
+
+      // set the height to the child's height if it is larger than the previous child
+      children[group].forEach((child) => {
         if (child.clientHeight > this.height) this.height = child.clientHeight;
       });
 
-      groupArr.forEach((child) => child.style.height = this.height + 'px');
-    });
+      // set all children to the same height
+      children[group].forEach((child) => child.style.height = this.height + 'px');
+    }
 
-    clearTimeout(window.equalizing);
+    // send the equalized event to the window
+    this.complete();
+  }
 
+  complete() {
     window.equalizing = setTimeout(() => {
       window.dispatchEvent(this.event);
     }, 100);
@@ -52,7 +85,8 @@ class Equalizer {
 
   update() {
     this.children = this.getChildren();
-    this.matchHeight();
+    this.rows = this.getRows();
+    this.equalize();
   }
 }
 
