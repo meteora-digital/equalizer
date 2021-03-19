@@ -37,7 +37,13 @@ var Equalizer = /*#__PURE__*/function () {
   _createClass(Equalizer, [{
     key: "equalize",
     value: function equalize() {
-      this.matchHeight(this.settings.rows ? this.rows : this.children);
+      if (this.settings.rows) {
+        for (var group in this.rows) {
+          this.matchHeight(this.rows[group]);
+        }
+      } else {
+        this.matchHeight(this.children);
+      }
     }
   }, {
     key: "getChildren",
@@ -68,7 +74,8 @@ var Equalizer = /*#__PURE__*/function () {
       for (var group in this.children) {
         this.children[group].forEach(function (child) {
           offsetY = (0, _helpers.offset)(child).y;
-          _this3.rows[offsetY] ? _this3.rows[offsetY].push(child) : _this3.rows[offsetY] = [child];
+          _this3.rows.group = {};
+          _this3.rows.group[offsetY] ? _this3.rows.group[offsetY].push(child) : _this3.rows.group[offsetY] = [child];
         });
       }
 

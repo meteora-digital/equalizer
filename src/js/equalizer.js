@@ -17,7 +17,11 @@ class Equalizer {
   }
 
   equalize() {
-    this.matchHeight((this.settings.rows) ? this.rows : this.children);
+    if (this.settings.rows) {
+      for (let group in this.rows) this.matchHeight(this.rows[group]);
+    }else {
+      this.matchHeight(this.children);
+    }
   }
 
   getChildren() {
@@ -41,7 +45,8 @@ class Equalizer {
     for (let group in this.children) {
       this.children[group].forEach((child) => {
         offsetY = offset(child).y;
-        (this.rows[offsetY]) ? this.rows[offsetY].push(child) : this.rows[offsetY] = [child];
+        this.rows.group = {};
+        (this.rows.group[offsetY]) ? this.rows.group[offsetY].push(child) : this.rows.group[offsetY] = [child];
       });
     }
 
