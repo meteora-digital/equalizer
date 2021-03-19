@@ -12,6 +12,8 @@ class Equalizer {
       rows: false,
     }, options);
 
+    // console.log(this.children);
+    // console.log(this.row);
 
     attach(window, 'resize', () => this.equalize(), 500);
   }
@@ -26,12 +28,18 @@ class Equalizer {
 
   getChildren() {
     this.children = {};
+    this.ids = this.container.getAttribute('data-equalize');
 
-    try {
-      this.container.getAttribute('data-equalize').split(',').forEach((id) => this.children[id] = nodeArray(this.container.querySelectorAll(`[data-equalize-watch="${id}"]`)));
-    }catch (err) {
+    if (this.ids === "") {
       this.children.main = nodeArray(this.container.querySelectorAll('[data-equalize-watch]'));
+    }else {
+      try {
+        this.container.getAttribute('data-equalize').split(',').forEach((id) => this.children[id] = nodeArray(this.container.querySelectorAll(`[data-equalize-watch="${id}"]`)));
+      }catch (err) {
+        this.children[this.ids] = nodeArray(this.container.querySelectorAll('[data-equalize-watch]'));
+      }
     }
+
 
     return this.children;
   }
@@ -43,10 +51,10 @@ class Equalizer {
     let offsetY = 0;
 
     for (let group in this.children) {
+      this.rows[group] = {};
       this.children[group].forEach((child) => {
         offsetY = offset(child).y;
-        this.rows.group = {};
-        (this.rows.group[offsetY]) ? this.rows.group[offsetY].push(child) : this.rows.group[offsetY] = [child];
+        (this.rows[group][offsetY]) ? this.rows[group][offsetY].push(child) : this.rows[group][offsetY] = [child];
       });
     }
 

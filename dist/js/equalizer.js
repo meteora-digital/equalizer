@@ -28,7 +28,9 @@ var Equalizer = /*#__PURE__*/function () {
     window.equalizing = null;
     this.settings = (0, _helpers.objectAssign)({
       rows: false
-    }, options);
+    }, options); // console.log(this.children);
+    // console.log(this.row);
+
     (0, _helpers.attach)(window, 'resize', function () {
       return _this.equalize();
     }, 500);
@@ -51,13 +53,18 @@ var Equalizer = /*#__PURE__*/function () {
       var _this2 = this;
 
       this.children = {};
+      this.ids = this.container.getAttribute('data-equalize');
 
-      try {
-        this.container.getAttribute('data-equalize').split(',').forEach(function (id) {
-          return _this2.children[id] = (0, _helpers.nodeArray)(_this2.container.querySelectorAll("[data-equalize-watch=\"".concat(id, "\"]")));
-        });
-      } catch (err) {
+      if (this.ids === "") {
         this.children.main = (0, _helpers.nodeArray)(this.container.querySelectorAll('[data-equalize-watch]'));
+      } else {
+        try {
+          this.container.getAttribute('data-equalize').split(',').forEach(function (id) {
+            return _this2.children[id] = (0, _helpers.nodeArray)(_this2.container.querySelectorAll("[data-equalize-watch=\"".concat(id, "\"]")));
+          });
+        } catch (err) {
+          this.children[this.ids] = (0, _helpers.nodeArray)(this.container.querySelectorAll('[data-equalize-watch]'));
+        }
       }
 
       return this.children;
@@ -71,12 +78,17 @@ var Equalizer = /*#__PURE__*/function () {
       this.matchHeight(this.children);
       var offsetY = 0;
 
-      for (var group in this.children) {
-        this.children[group].forEach(function (child) {
+      var _loop = function _loop(group) {
+        _this3.rows[group] = {};
+
+        _this3.children[group].forEach(function (child) {
           offsetY = (0, _helpers.offset)(child).y;
-          _this3.rows.group = {};
-          _this3.rows.group[offsetY] ? _this3.rows.group[offsetY].push(child) : _this3.rows.group[offsetY] = [child];
+          _this3.rows[group][offsetY] ? _this3.rows[group][offsetY].push(child) : _this3.rows[group][offsetY] = [child];
         });
+      };
+
+      for (var group in this.children) {
+        _loop(group);
       }
 
       return this.rows;
