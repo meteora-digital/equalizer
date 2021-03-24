@@ -25,32 +25,41 @@ var Equalizer = /*#__PURE__*/function () {
     this.children = this.getChildren();
     this.rows = this.getRows();
     this.event = new _helpers.Event('equalized');
+    this.timeout = null;
     window.equalizing = null;
     this.settings = (0, _helpers.objectAssign)({
       rows: false
-    }, options); // console.log(this.children);
-    // console.log(this.row);
-
+    }, options);
     (0, _helpers.attach)(window, 'resize', function () {
       return _this.equalize();
-    }, 500);
+    }, 250);
+    (0, _helpers.attach)(window, 'resize', function () {
+      _this.rows = _this.getRows();
+
+      _this.equalize();
+    }, 2500);
   }
 
   _createClass(Equalizer, [{
     key: "equalize",
     value: function equalize() {
-      if (this.settings.rows) {
-        for (var group in this.rows) {
-          this.matchHeight(this.rows[group]);
+      var _this2 = this;
+
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(function () {
+        if (_this2.settings.rows) {
+          for (var group in _this2.rows) {
+            _this2.matchHeight(_this2.rows[group]);
+          }
+        } else {
+          _this2.matchHeight(_this2.children);
         }
-      } else {
-        this.matchHeight(this.children);
-      }
+      }, 500);
     }
   }, {
     key: "getChildren",
     value: function getChildren() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.children = {};
       this.ids = this.container.getAttribute('data-equalize');
@@ -60,7 +69,7 @@ var Equalizer = /*#__PURE__*/function () {
       } else {
         try {
           this.container.getAttribute('data-equalize').split(',').forEach(function (id) {
-            return _this2.children[id] = (0, _helpers.nodeArray)(_this2.container.querySelectorAll("[data-equalize-watch=\"".concat(id, "\"]")));
+            return _this3.children[id] = (0, _helpers.nodeArray)(_this3.container.querySelectorAll("[data-equalize-watch=\"".concat(id, "\"]")));
           });
         } catch (err) {
           this.children[this.ids] = (0, _helpers.nodeArray)(this.container.querySelectorAll('[data-equalize-watch]'));
@@ -72,18 +81,18 @@ var Equalizer = /*#__PURE__*/function () {
   }, {
     key: "getRows",
     value: function getRows() {
-      var _this3 = this;
+      var _this4 = this;
 
       this.rows = {};
       this.matchHeight(this.children);
       var offsetY = 0;
 
       var _loop = function _loop(group) {
-        _this3.rows[group] = {};
+        _this4.rows[group] = {};
 
-        _this3.children[group].forEach(function (child) {
+        _this4.children[group].forEach(function (child) {
           offsetY = (0, _helpers.offset)(child).y;
-          _this3.rows[group][offsetY] ? _this3.rows[group][offsetY].push(child) : _this3.rows[group][offsetY] = [child];
+          _this4.rows[group][offsetY] ? _this4.rows[group][offsetY].push(child) : _this4.rows[group][offsetY] = [child];
         });
       };
 
@@ -96,7 +105,7 @@ var Equalizer = /*#__PURE__*/function () {
   }, {
     key: "matchHeight",
     value: function matchHeight() {
-      var _this4 = this;
+      var _this5 = this;
 
       var children = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
       clearTimeout(window.equalizing); // Check to see if we passed in some children or not
@@ -112,11 +121,11 @@ var Equalizer = /*#__PURE__*/function () {
         }); // set the height to the child's height if it is larger than the previous child
 
         children[group].forEach(function (child) {
-          if (child.clientHeight > _this4.height) _this4.height = child.clientHeight;
+          if (child.clientHeight > _this5.height) _this5.height = child.clientHeight;
         }); // set all children to the same height
 
         children[group].forEach(function (child) {
-          return child.style.height = _this4.height + 'px';
+          return child.style.height = _this5.height + 'px';
         });
       } // send the equalized event to the window
 
@@ -126,10 +135,10 @@ var Equalizer = /*#__PURE__*/function () {
   }, {
     key: "complete",
     value: function complete() {
-      var _this5 = this;
+      var _this6 = this;
 
       window.equalizing = setTimeout(function () {
-        window.dispatchEvent(_this5.event);
+        window.dispatchEvent(_this6.event);
       }, 100);
     }
   }, {

@@ -6,24 +6,31 @@ class Equalizer {
     this.children = this.getChildren();
     this.rows = this.getRows();
     this.event = new Event('equalized');
+    this.timeout = null;
     window.equalizing = null;
 
     this.settings = objectAssign({
       rows: false,
     }, options);
 
-    // console.log(this.children);
-    // console.log(this.row);
+    attach(window, 'resize', () => this.equalize(), 250);
 
-    attach(window, 'resize', () => this.equalize(), 500);
+    attach(window, 'resize', () => {
+      this.rows = this.getRows();
+      this.equalize();
+    }, 2500);
   }
 
   equalize() {
-    if (this.settings.rows) {
-      for (let group in this.rows) this.matchHeight(this.rows[group]);
-    }else {
-      this.matchHeight(this.children);
-    }
+    clearTimeout(this.timeout);
+
+    this.timeout = setTimeout(() => {
+      if (this.settings.rows) {
+        for (let group in this.rows) this.matchHeight(this.rows[group]);
+      }else {
+        this.matchHeight(this.children);
+      }
+    }, 500);
   }
 
   getChildren() {
