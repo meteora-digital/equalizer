@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
-var _helpers = require("@meteora-digital/helpers");
+var _meteora = require("meteora");
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -24,16 +24,16 @@ var Equalizer = /*#__PURE__*/function () {
     this.container = el;
     this.children = this.getChildren();
     this.rows = this.getRows();
-    this.event = new _helpers.Event('equalized');
+    this.event = new _meteora.Event('equalized');
     this.timeout = null;
     window.equalizing = null;
-    this.settings = (0, _helpers.objectAssign)({
+    this.settings = (0, _meteora.objectAssign)({
       rows: false
     }, options);
-    (0, _helpers.attach)(window, 'resize', function () {
+    (0, _meteora.attach)(window, 'resize', function () {
       return _this.equalize();
     }, 250);
-    (0, _helpers.attach)(window, 'resize', function () {
+    (0, _meteora.attach)(window, 'resize', function () {
       _this.rows = _this.getRows();
 
       _this.equalize();
@@ -65,14 +65,14 @@ var Equalizer = /*#__PURE__*/function () {
       this.ids = this.container.getAttribute('data-equalize');
 
       if (this.ids === "") {
-        this.children.main = (0, _helpers.nodeArray)(this.container.querySelectorAll('[data-equalize-watch]'));
+        this.children.main = (0, _meteora.nodeArray)(this.container.querySelectorAll('[data-equalize-watch]'));
       } else {
         try {
           this.container.getAttribute('data-equalize').split(',').forEach(function (id) {
-            return _this3.children[id] = (0, _helpers.nodeArray)(_this3.container.querySelectorAll("[data-equalize-watch=\"".concat(id, "\"]")));
+            return _this3.children[id] = (0, _meteora.nodeArray)(_this3.container.querySelectorAll("[data-equalize-watch=\"".concat(id, "\"]")));
           });
         } catch (err) {
-          this.children[this.ids] = (0, _helpers.nodeArray)(this.container.querySelectorAll('[data-equalize-watch]'));
+          this.children[this.ids] = (0, _meteora.nodeArray)(this.container.querySelectorAll('[data-equalize-watch]'));
         }
       }
 
@@ -91,7 +91,7 @@ var Equalizer = /*#__PURE__*/function () {
         _this4.rows[group] = {};
 
         _this4.children[group].forEach(function (child) {
-          offsetY = (0, _helpers.offset)(child).y;
+          offsetY = (0, _meteora.offset)(child).y;
           _this4.rows[group][offsetY] ? _this4.rows[group][offsetY].push(child) : _this4.rows[group][offsetY] = [child];
         });
       };
