@@ -1,4 +1,4 @@
-import { attach, Event, nodeArray, objectAssign, offset } from '@meteora-digital/helpers';
+import { attach, Event, nodeArray, objectAssign, offset } from 'meteora';
 
 class Equalizer {
   constructor(el, options = {}) {
