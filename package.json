@@ -4,7 +4,7 @@
   "description": "An es6 class to equalize the heights of HTML elements.",
   "main": "dist/js/equalizer.js",
   "scripts": {
-    "test": "echo \"Equalizer\""
+    "test": "npm i && gulp"
   },
   "keywords": [
     "equal",
