@@ -13,12 +13,10 @@ class Equalizer {
       rows: false,
     }, options);
 
-    attach(window, 'resize', () => this.equalize(), 250);
-
     attach(window, 'resize', () => {
-      this.rows = this.getRows();
+      if (this.settings.rows) this.rows = this.getRows();
       this.equalize();
-    }, 2500);
+    }, 500);
   }
 
   equalize() {

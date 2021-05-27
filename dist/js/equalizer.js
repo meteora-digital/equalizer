@@ -31,13 +31,10 @@ var Equalizer = /*#__PURE__*/function () {
       rows: false
     }, options);
     (0, _meteora.attach)(window, 'resize', function () {
-      return _this.equalize();
-    }, 250);
-    (0, _meteora.attach)(window, 'resize', function () {
-      _this.rows = _this.getRows();
+      if (_this.settings.rows) _this.rows = _this.getRows();
 
       _this.equalize();
-    }, 2500);
+    }, 500);
   }
 
   _createClass(Equalizer, [{
