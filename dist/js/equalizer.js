@@ -26,14 +26,26 @@ var Equalizer = /*#__PURE__*/function () {
     this.rows = this.getRows();
     this.event = new _meteora.Event('equalized');
     this.timeout = null;
-    window.equalizing = null;
+    window.equalizing = null; // Some data we will use with a cache
+
+    this.cache = {
+      window: {
+        innerWidth: window.innerWidth
+      }
+    };
     this.settings = (0, _meteora.objectAssign)({
       rows: false
     }, options);
     (0, _meteora.attach)(window, 'resize', function () {
-      if (_this.settings.rows) _this.rows = _this.getRows();
+      // Prevent the elements from equalizing if we only resized vertically as this "shouldn't" break any layouts
+      if (_this.cache.window.innerWidth !== window.innerWidth) {
+        // Update the cache
+        _this.cache.window.innerWidth - window.innerWidth; // Equalize
 
-      _this.equalize();
+        if (_this.settings.rows) _this.rows = _this.getRows();
+
+        _this.equalize();
+      }
     }, 500);
   }
 
