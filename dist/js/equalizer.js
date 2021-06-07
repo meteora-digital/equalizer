@@ -30,7 +30,7 @@ var Equalizer = /*#__PURE__*/function () {
 
     this.cache = {
       window: {
-        innerWidth: window.innerWidth
+        innerWidth: -1
       }
     };
     this.settings = (0, _meteora.objectAssign)({
@@ -40,7 +40,7 @@ var Equalizer = /*#__PURE__*/function () {
       // Prevent the elements from equalizing if we only resized vertically as this "shouldn't" break any layouts
       if (_this.cache.window.innerWidth !== window.innerWidth) {
         // Update the cache
-        _this.cache.window.innerWidth - window.innerWidth; // Equalize
+        _this.cache.window.innerWidth = window.innerWidth; // Equalize
 
         if (_this.settings.rows) _this.rows = _this.getRows();
 

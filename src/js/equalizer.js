@@ -12,7 +12,7 @@ class Equalizer {
     // Some data we will use with a cache
     this.cache = {
       window: {
-        innerWidth: window.innerWidth,
+        innerWidth: -1,
       }
     }
 
@@ -24,7 +24,7 @@ class Equalizer {
       // Prevent the elements from equalizing if we only resized vertically as this "shouldn't" break any layouts
       if (this.cache.window.innerWidth !== window.innerWidth) {
         // Update the cache
-        this.cache.window.innerWidth - window.innerWidth;
+        this.cache.window.innerWidth = window.innerWidth;
         // Equalize
         if (this.settings.rows) this.rows = this.getRows();
         this.equalize();
