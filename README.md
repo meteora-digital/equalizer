@@ -2,7 +2,7 @@
 
 Equalizer is an es6 Class which can be used to easily match the height of multiple elements using names to isolate matching groups.
 
-##### Note: version 0.2.0 has breaking changes. Please update your code, or lock your version to 0.1.6 to avoid errors
+##### Note: version 0.2.0 has breaking changes. Please update your code, or lock your version to 0.1.9 to avoid errors
 
 ### Installation
 
