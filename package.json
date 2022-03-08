@@ -16,9 +16,6 @@
   ],
   "author": "Emmanuel Davies",
   "license": "MIT",
-  "dependencies": {
-    "meteora": "latest"
-  },
   "devDependencies": {
     "@babel/core": "^7.10.2",
     "@babel/preset-env": "^7.11.0",
