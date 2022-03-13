@@ -19,9 +19,14 @@ var Equalizer = /*#__PURE__*/function () {
 
     _classCallCheck(this, Equalizer);
 
-    // Array of equalizer controllers
+    // A cache to stop endless loops
+    this.cache = {
+      width: null
+    }; // The resize observer
+
     this.observer = new ResizeObserver(function (entries) {
-      return _this.resize();
+      // If the width has definitely changed, call the resize method
+      if (_this.cache.width !== _this.settings.container.clientWidth) _this.resize();
     }); // The elements that are being resized
 
     this.identifiers = {}; // A timeout throttle
@@ -32,10 +37,6 @@ var Equalizer = /*#__PURE__*/function () {
       container: null,
       identifiers: '',
       rows: false
-    }; // A cache to stop endless loops
-
-    this.cache = {
-      width: null
     }; // Merge the default settings with the user settings
 
     for (var key in this.settings) {
@@ -123,8 +124,6 @@ var Equalizer = /*#__PURE__*/function () {
     value: function resize() {
       var _this3 = this;
 
-      // Stop everything if the width has not changed
-      if (this.cache.width === this.settings.container.clientWidth) return;
       clearTimeout(this.timeout['resize']); // Throttle the resize event
 
       this.timeout['resize'] = setTimeout(function () {

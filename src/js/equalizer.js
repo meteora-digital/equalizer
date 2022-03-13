@@ -1,7 +1,12 @@
 export default class Equalizer {
   constructor(options = {}) {
-    // Array of equalizer controllers
-    this.observer = new ResizeObserver((entries) => this.resize());
+    // A cache to stop endless loops
+    this.cache = { width: null };
+    // The resize observer
+    this.observer = new ResizeObserver((entries) => {
+      // If the width has definitely changed, call the resize method
+      if (this.cache.width !== this.settings.container.clientWidth) this.resize();
+    });
     // The elements that are being resized
     this.identifiers = {};
     // A timeout throttle
@@ -12,11 +17,6 @@ export default class Equalizer {
       container: null,
       identifiers: '',
       rows: false,
-    };
-
-    // A cache to stop endless loops
-    this.cache = {
-      width: null,
     };
 
     // Merge the default settings with the user settings
@@ -99,9 +99,6 @@ export default class Equalizer {
   }
 
   resize() {
-    // Stop everything if the width has not changed
-    if (this.cache.width === this.settings.container.clientWidth) return;
-
     clearTimeout(this.timeout['resize']);
     // Throttle the resize event
     this.timeout['resize'] = setTimeout(() => {
