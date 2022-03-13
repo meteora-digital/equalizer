@@ -32,6 +32,10 @@ var Equalizer = /*#__PURE__*/function () {
       container: null,
       identifiers: '',
       rows: false
+    }; // A cache to stop endless loops
+
+    this.cache = {
+      width: null
     }; // Merge the default settings with the user settings
 
     for (var key in this.settings) {
@@ -119,9 +123,14 @@ var Equalizer = /*#__PURE__*/function () {
     value: function resize() {
       var _this3 = this;
 
+      // Stop everything if the width has not changed
+      if (this.cache.width === this.settings.container.clientWidth) return;
       clearTimeout(this.timeout['resize']); // Throttle the resize event
 
       this.timeout['resize'] = setTimeout(function () {
+        // Set the width to the current width
+        _this3.cache.width = _this3.settings.container.clientWidth;
+
         for (var identifier in _this3.identifiers) {
           if (Object.hasOwnProperty.call(_this3.identifiers, identifier)) {
             var rows = _this3.identifiers[identifier]; // An initial height that will be increased as we loop each element

@@ -14,6 +14,11 @@ export default class Equalizer {
       rows: false,
     };
 
+    // A cache to stop endless loops
+    this.cache = {
+      width: null,
+    };
+
     // Merge the default settings with the user settings
     for (const key in this.settings) {
       if (Object.hasOwnProperty.call(this.settings, key) && options[key] !== undefined) {
@@ -94,9 +99,15 @@ export default class Equalizer {
   }
 
   resize() {
+    // Stop everything if the width has not changed
+    if (this.cache.width === this.settings.container.clientWidth) return;
+
     clearTimeout(this.timeout['resize']);
     // Throttle the resize event
     this.timeout['resize'] = setTimeout(() => {
+      // Set the width to the current width
+      this.cache.width = this.settings.container.clientWidth;
+
       for (const identifier in this.identifiers) {
         if (Object.hasOwnProperty.call(this.identifiers, identifier)) {
           const rows = this.identifiers[identifier];
