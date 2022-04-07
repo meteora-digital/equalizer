@@ -26,13 +26,13 @@ export default class Equalizer {
       }
     }
 
+    // Update the elements we need to be watching
+    this.update();
+
     // If the user has specified a container, add it to the observer
     if (this.settings.container) {
       this.observer.observe(this.settings.container);
     }
-
-    // Update the elements we need to be watching
-    this.update();
   }
 
   update() {
@@ -74,6 +74,8 @@ export default class Equalizer {
           // Loop through the elements
           for (let index = 0; index < elements.length; index++) {
             const element = elements[index];
+            // Set a fake initial height to make everything align
+            element.style.height = '1px';
             // Create an array for the element offset
             if (this.identifiers[identifier][offset(element)] === undefined) this.identifiers[identifier][offset(element)] = [];
             // If the element is not already in the array, add the element to the array
@@ -90,12 +92,17 @@ export default class Equalizer {
       // Loop through the elements
       for (let index = 0; index < elements.length; index++) {
         const element = elements[index];
+        // Set a fake initial height to make everything align
+        element.style.height = '1px';
         // Create an array for the element offset
         if (this.identifiers[0][offset(element)] === undefined) this.identifiers[0][offset(element)] = [];
         // If the element is not already in the array, add the element to the array
         if (this.identifiers[0][offset(element)].indexOf(element) === -1) this.identifiers[0][offset(element)].push(element);
       }
     }
+
+    // Call the resize method
+    this.resize();
   }
 
   resize() {

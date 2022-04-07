@@ -43,15 +43,14 @@ var Equalizer = /*#__PURE__*/function () {
       if (Object.hasOwnProperty.call(this.settings, key) && options[key] !== undefined) {
         this.settings[key] = options[key];
       }
-    } // If the user has specified a container, add it to the observer
-
-
-    if (this.settings.container) {
-      this.observer.observe(this.settings.container);
     } // Update the elements we need to be watching
 
 
-    this.update();
+    this.update(); // If the user has specified a container, add it to the observer
+
+    if (this.settings.container) {
+      this.observer.observe(this.settings.container);
+    }
   }
 
   _createClass(Equalizer, [{
@@ -95,7 +94,9 @@ var Equalizer = /*#__PURE__*/function () {
             var elements = this.settings.container.querySelectorAll("[data-equalize-watch=\"".concat(identifier, "\"]")); // Loop through the elements
 
             for (var index = 0; index < elements.length; index++) {
-              var element = elements[index]; // Create an array for the element offset
+              var element = elements[index]; // Set a fake initial height to make everything align
+
+              element.style.height = '1px'; // Create an array for the element offset
 
               if (this.identifiers[identifier][offset(element)] === undefined) this.identifiers[identifier][offset(element)] = []; // If the element is not already in the array, add the element to the array
 
@@ -111,13 +112,18 @@ var Equalizer = /*#__PURE__*/function () {
 
 
         for (var _index = 0; _index < _elements.length; _index++) {
-          var _element = _elements[_index]; // Create an array for the element offset
+          var _element = _elements[_index]; // Set a fake initial height to make everything align
+
+          _element.style.height = '1px'; // Create an array for the element offset
 
           if (this.identifiers[0][offset(_element)] === undefined) this.identifiers[0][offset(_element)] = []; // If the element is not already in the array, add the element to the array
 
           if (this.identifiers[0][offset(_element)].indexOf(_element) === -1) this.identifiers[0][offset(_element)].push(_element);
         }
-      }
+      } // Call the resize method
+
+
+      this.resize();
     }
   }, {
     key: "resize",
