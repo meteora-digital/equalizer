@@ -5,7 +5,9 @@ export default class Equalizer {
     // The resize observer
     this.observer = new ResizeObserver((entries) => {
       // If the width has definitely changed, call the resize method
-      if (this.cache.width !== this.settings.container.clientWidth) this.resize();
+      if (this.cache.width !== this.settings.container.clientWidth) {
+        (this.settings.rows) ? this.update() : this.resize();
+      };
     });
     // The elements that are being resized
     this.identifiers = {};

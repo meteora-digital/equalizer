@@ -26,7 +26,11 @@ var Equalizer = /*#__PURE__*/function () {
 
     this.observer = new ResizeObserver(function (entries) {
       // If the width has definitely changed, call the resize method
-      if (_this.cache.width !== _this.settings.container.clientWidth) _this.resize();
+      if (_this.cache.width !== _this.settings.container.clientWidth) {
+        _this.settings.rows ? _this.update() : _this.resize();
+      }
+
+      ;
     }); // The elements that are being resized
 
     this.identifiers = {}; // A timeout throttle
