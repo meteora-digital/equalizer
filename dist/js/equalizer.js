@@ -76,7 +76,9 @@ var Equalizer = /*#__PURE__*/function () {
 
 
       if (this.settings.identifiers.length) {
-        // Create a list of identifiers
+        // Reset the identifiers object
+        this.identifiers = {}; // Create a list of identifiers
+
         var identifiers = []; // Try to convert the identifiers to an array
 
         try {

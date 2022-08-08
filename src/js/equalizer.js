@@ -52,6 +52,9 @@ export default class Equalizer {
 
     // If the user has specified an array of identifiers, add them to the elements object
     if (this.settings.identifiers.length) {
+      // Reset the identifiers object
+      this.identifiers = {};
+
       // Create a list of identifiers
       let identifiers = [];
 
