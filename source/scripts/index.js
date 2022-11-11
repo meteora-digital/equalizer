@@ -40,90 +40,95 @@ export default class Equalizer {
     }
   }
 
-  update() {
-    // Function to return the offset of the child element
-    const offset = (element) => {
-      let y = 0;
+  getElementOffset(element) {
+    let y = 0;
 
-      while (element && element != this.settings.container) {
-        y += element.offsetTop;
-        element = element.offsetParent;
-      }
-
-      return y;
+    while (element && element != this.settings.container) {
+      y += element.offsetTop;
+      element = element.offsetParent;
     }
 
-    this.beforeUpdate();
+    return y;
+  }
 
-    // If the user has specified an array of identifiers, add them to the elements object
-    if (this.settings.identifiers.length) {
-      // Reset the identifiers object
-      this.identifiers = {};
+  update() {
+    clearTimeout(this.timeout['update']);
 
-      // Create a list of identifiers
-      let identifiers = [];
+    // Throttle the update event
+    this.timeout['update'] = setTimeout(() => {
+      this.beforeUpdate();
 
-      // Try to convert the identifiers to an array
-      try {
-        identifiers = identifiers.concat(this.settings.identifiers.split(','));
-        // Loop through the identifiers
-        identifiers.forEach((identifier) => {
-          // Create a new array in the elements object for this identifier
-          if (this.identifiers[identifier] === undefined) this.identifiers[identifier] = {};
-        });
-      } catch (err) {
-        console.log(err);
-      }
+      // If the user has specified an array of identifiers, add them to the elements object
+      if (this.settings.identifiers.length) {
+        // Reset the identifiers object
+        this.identifiers = {};
 
-      // loop through the elements object
-      for (const identifier in this.identifiers) {
-        // If the identifier exists in the elements object
-        if (Object.hasOwnProperty.call(this.identifiers, identifier)) {
-          // Find all the elements in the container than need to be watched
-          let elements = this.settings.container.querySelectorAll(`[data-equalize-watch="${identifier}"]`);
-          // Loop through the elements
-          for (let index = 0; index < elements.length; index++) {
-            const element = elements[index];
-            // Set a fake initial height to make everything align
-            element.style.height = '1px';
-            // Create an array for the element offset
-            if (this.identifiers[identifier][offset(element)] === undefined) this.identifiers[identifier][offset(element)] = [];
-            // If the element is not already in the array, add the element to the array
-            if (this.identifiers[identifier][offset(element)].indexOf(element) === -1) this.identifiers[identifier][offset(element)].push(element);
+        // Create a list of identifiers
+        let identifiers = [];
+
+        // Try to convert the identifiers to an array
+        try {
+          identifiers = identifiers.concat(this.settings.identifiers.split(','));
+          // Loop through the identifiers
+          identifiers.forEach((identifier) => {
+            // Create a new array in the elements object for this identifier
+            if (this.identifiers[identifier] === undefined) this.identifiers[identifier] = {};
+          });
+        } catch (err) {
+          console.log(err);
+        }
+
+        // loop through the elements object
+        for (const identifier in this.identifiers) {
+          // If the identifier exists in the elements object
+          if (Object.hasOwnProperty.call(this.identifiers, identifier)) {
+            // Find all the elements in the container than need to be watched
+            let elements = this.settings.container.querySelectorAll(`[data-equalize-watch="${identifier}"]`);
+            // Loop through the elements
+            for (let index = 0; index < elements.length; index++) {
+              const element = elements[index];
+              // Set a fake initial height to make everything align
+              element.style.height = '1px';
+              // Create an array for the element offset
+              if (this.identifiers[identifier][this.getElementOffset(element)] === undefined) this.identifiers[identifier][this.getElementOffset(element)] = [];
+              // If the element is not already in the array, add the element to the array
+              if (this.identifiers[identifier][this.getElementOffset(element)].indexOf(element) === -1) this.identifiers[identifier][this.getElementOffset(element)].push(element);
+            }
           }
+        }
+
+      } else {
+        // Set up a single identifier for the equalizer
+        this.identifiers[0] = {};
+        // Find all the elements in the container than need to be watched
+        let elements = this.settings.container.querySelectorAll('[data-equalize-watch]');
+        // Loop through the elements
+        for (let index = 0; index < elements.length; index++) {
+          const element = elements[index];
+          // Set a fake initial height to make everything align
+          element.style.height = '1px';
+          // Create an array for the element offset
+          if (this.identifiers[0][this.getElementOffset(element)] === undefined) this.identifiers[0][this.getElementOffset(element)] = [];
+          // If the element is not already in the array, add the element to the array
+          if (this.identifiers[0][this.getElementOffset(element)].indexOf(element) === -1) this.identifiers[0][this.getElementOffset(element)].push(element);
         }
       }
 
-    } else {
-      // Set up a single identifier for the equalizer
-      this.identifiers[0] = {};
-      // Find all the elements in the container than need to be watched
-      let elements = this.settings.container.querySelectorAll('[data-equalize-watch]');
-      // Loop through the elements
-      for (let index = 0; index < elements.length; index++) {
-        const element = elements[index];
-        // Set a fake initial height to make everything align
-        element.style.height = '1px';
-        // Create an array for the element offset
-        if (this.identifiers[0][offset(element)] === undefined) this.identifiers[0][offset(element)] = [];
-        // If the element is not already in the array, add the element to the array
-        if (this.identifiers[0][offset(element)].indexOf(element) === -1) this.identifiers[0][offset(element)].push(element);
-      }
-    }
+      this.callback('update');
 
-    this.callback('update');
-
-    // Call the resize method
-    this.resize();
+      // Call the resize method
+      this.resize();
+    }, 100);
   }
 
   resize() {
     clearTimeout(this.timeout['resize']);
 
-    this.beforeResize();
 
     // Throttle the resize event
     this.timeout['resize'] = setTimeout(() => {
+
+      this.beforeResize();
 
       // Set the width to the current width
       this.cache.width = this.settings.container.clientWidth;
@@ -172,7 +177,7 @@ export default class Equalizer {
       }
 
       this.callback('resize');
-    }, 50);
+    }, 100);
   }
 
   beforeResize() {

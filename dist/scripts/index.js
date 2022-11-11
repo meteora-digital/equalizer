@@ -55,88 +55,95 @@ var Equalizer = /*#__PURE__*/function () {
     }
   }
   _createClass(Equalizer, [{
+    key: "getElementOffset",
+    value: function getElementOffset(element) {
+      var y = 0;
+      while (element && element != this.settings.container) {
+        y += element.offsetTop;
+        element = element.offsetParent;
+      }
+      return y;
+    }
+  }, {
     key: "update",
     value: function update() {
       var _this2 = this;
-      // Function to return the offset of the child element
-      var offset = function offset(element) {
-        var y = 0;
-        while (element && element != _this2.settings.container) {
-          y += element.offsetTop;
-          element = element.offsetParent;
-        }
-        return y;
-      };
-      this.beforeUpdate();
+      clearTimeout(this.timeout['update']);
 
-      // If the user has specified an array of identifiers, add them to the elements object
-      if (this.settings.identifiers.length) {
-        // Reset the identifiers object
-        this.identifiers = {};
+      // Throttle the update event
+      this.timeout['update'] = setTimeout(function () {
+        _this2.beforeUpdate();
 
-        // Create a list of identifiers
-        var identifiers = [];
+        // If the user has specified an array of identifiers, add them to the elements object
+        if (_this2.settings.identifiers.length) {
+          // Reset the identifiers object
+          _this2.identifiers = {};
 
-        // Try to convert the identifiers to an array
-        try {
-          identifiers = identifiers.concat(this.settings.identifiers.split(','));
-          // Loop through the identifiers
-          identifiers.forEach(function (identifier) {
-            // Create a new array in the elements object for this identifier
-            if (_this2.identifiers[identifier] === undefined) _this2.identifiers[identifier] = {};
-          });
-        } catch (err) {
-          console.log(err);
-        }
+          // Create a list of identifiers
+          var identifiers = [];
 
-        // loop through the elements object
-        for (var identifier in this.identifiers) {
-          // If the identifier exists in the elements object
-          if (Object.hasOwnProperty.call(this.identifiers, identifier)) {
-            // Find all the elements in the container than need to be watched
-            var elements = this.settings.container.querySelectorAll("[data-equalize-watch=\"".concat(identifier, "\"]"));
-            // Loop through the elements
-            for (var index = 0; index < elements.length; index++) {
-              var element = elements[index];
-              // Set a fake initial height to make everything align
-              element.style.height = '1px';
-              // Create an array for the element offset
-              if (this.identifiers[identifier][offset(element)] === undefined) this.identifiers[identifier][offset(element)] = [];
-              // If the element is not already in the array, add the element to the array
-              if (this.identifiers[identifier][offset(element)].indexOf(element) === -1) this.identifiers[identifier][offset(element)].push(element);
+          // Try to convert the identifiers to an array
+          try {
+            identifiers = identifiers.concat(_this2.settings.identifiers.split(','));
+            // Loop through the identifiers
+            identifiers.forEach(function (identifier) {
+              // Create a new array in the elements object for this identifier
+              if (_this2.identifiers[identifier] === undefined) _this2.identifiers[identifier] = {};
+            });
+          } catch (err) {
+            console.log(err);
+          }
+
+          // loop through the elements object
+          for (var identifier in _this2.identifiers) {
+            // If the identifier exists in the elements object
+            if (Object.hasOwnProperty.call(_this2.identifiers, identifier)) {
+              // Find all the elements in the container than need to be watched
+              var elements = _this2.settings.container.querySelectorAll("[data-equalize-watch=\"".concat(identifier, "\"]"));
+              // Loop through the elements
+              for (var index = 0; index < elements.length; index++) {
+                var element = elements[index];
+                // Set a fake initial height to make everything align
+                element.style.height = '1px';
+                // Create an array for the element offset
+                if (_this2.identifiers[identifier][_this2.getElementOffset(element)] === undefined) _this2.identifiers[identifier][_this2.getElementOffset(element)] = [];
+                // If the element is not already in the array, add the element to the array
+                if (_this2.identifiers[identifier][_this2.getElementOffset(element)].indexOf(element) === -1) _this2.identifiers[identifier][_this2.getElementOffset(element)].push(element);
+              }
             }
           }
+        } else {
+          // Set up a single identifier for the equalizer
+          _this2.identifiers[0] = {};
+          // Find all the elements in the container than need to be watched
+          var _elements = _this2.settings.container.querySelectorAll('[data-equalize-watch]');
+          // Loop through the elements
+          for (var _index = 0; _index < _elements.length; _index++) {
+            var _element = _elements[_index];
+            // Set a fake initial height to make everything align
+            _element.style.height = '1px';
+            // Create an array for the element offset
+            if (_this2.identifiers[0][_this2.getElementOffset(_element)] === undefined) _this2.identifiers[0][_this2.getElementOffset(_element)] = [];
+            // If the element is not already in the array, add the element to the array
+            if (_this2.identifiers[0][_this2.getElementOffset(_element)].indexOf(_element) === -1) _this2.identifiers[0][_this2.getElementOffset(_element)].push(_element);
+          }
         }
-      } else {
-        // Set up a single identifier for the equalizer
-        this.identifiers[0] = {};
-        // Find all the elements in the container than need to be watched
-        var _elements = this.settings.container.querySelectorAll('[data-equalize-watch]');
-        // Loop through the elements
-        for (var _index = 0; _index < _elements.length; _index++) {
-          var _element = _elements[_index];
-          // Set a fake initial height to make everything align
-          _element.style.height = '1px';
-          // Create an array for the element offset
-          if (this.identifiers[0][offset(_element)] === undefined) this.identifiers[0][offset(_element)] = [];
-          // If the element is not already in the array, add the element to the array
-          if (this.identifiers[0][offset(_element)].indexOf(_element) === -1) this.identifiers[0][offset(_element)].push(_element);
-        }
-      }
-      this.callback('update');
+        _this2.callback('update');
 
-      // Call the resize method
-      this.resize();
+        // Call the resize method
+        _this2.resize();
+      }, 100);
     }
   }, {
     key: "resize",
     value: function resize() {
       var _this3 = this;
       clearTimeout(this.timeout['resize']);
-      this.beforeResize();
 
       // Throttle the resize event
       this.timeout['resize'] = setTimeout(function () {
+        _this3.beforeResize();
+
         // Set the width to the current width
         _this3.cache.width = _this3.settings.container.clientWidth;
         for (var identifier in _this3.identifiers) {
@@ -184,7 +191,7 @@ var Equalizer = /*#__PURE__*/function () {
           }
         }
         _this3.callback('resize');
-      }, 50);
+      }, 100);
     }
   }, {
     key: "beforeResize",
