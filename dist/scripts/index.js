@@ -123,7 +123,7 @@ var Equalizer = /*#__PURE__*/function () {
           if (this.identifiers[0][offset(_element)].indexOf(_element) === -1) this.identifiers[0][offset(_element)].push(_element);
         }
       }
-      this.callback('resize');
+      this.callback('update');
 
       // Call the resize method
       this.resize();
@@ -183,8 +183,8 @@ var Equalizer = /*#__PURE__*/function () {
             }
           }
         }
+        _this3.callback('resize');
       }, 50);
-      this.callback('resize');
     }
   }, {
     key: "beforeResize",
