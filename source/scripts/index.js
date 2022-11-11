@@ -119,9 +119,11 @@ export default class Equalizer {
 
   resize() {
     clearTimeout(this.timeout['resize']);
+
+    this.beforeResize();
+
     // Throttle the resize event
     this.timeout['resize'] = setTimeout(() => {
-      this.beforeResize();
 
       // Set the width to the current width
       this.cache.width = this.settings.container.clientWidth;

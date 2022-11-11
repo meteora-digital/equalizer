@@ -133,10 +133,10 @@ var Equalizer = /*#__PURE__*/function () {
     value: function resize() {
       var _this3 = this;
       clearTimeout(this.timeout['resize']);
+      this.beforeResize();
+
       // Throttle the resize event
       this.timeout['resize'] = setTimeout(function () {
-        _this3.beforeResize();
-
         // Set the width to the current width
         _this3.cache.width = _this3.settings.container.clientWidth;
         for (var identifier in _this3.identifiers) {
