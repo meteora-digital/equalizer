@@ -131,13 +131,14 @@ var Equalizer = /*#__PURE__*/function () {
         _this2.callback('update');
 
         // Call the resize method
-        _this2.resize();
+        _this2.resize(0);
       }, 100);
     }
   }, {
     key: "resize",
     value: function resize() {
       var _this3 = this;
+      var timeout = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 100;
       clearTimeout(this.timeout['resize']);
 
       // Throttle the resize event
@@ -191,7 +192,7 @@ var Equalizer = /*#__PURE__*/function () {
           }
         }
         _this3.callback('resize');
-      }, 100);
+      }, timeout);
     }
   }, {
     key: "beforeResize",

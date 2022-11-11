@@ -117,11 +117,11 @@ export default class Equalizer {
       this.callback('update');
 
       // Call the resize method
-      this.resize();
+      this.resize(0);
     }, 100);
   }
 
-  resize() {
+  resize(timeout = 100) {
     clearTimeout(this.timeout['resize']);
 
 
@@ -177,7 +177,7 @@ export default class Equalizer {
       }
 
       this.callback('resize');
-    }, 100);
+    }, timeout);
   }
 
   beforeResize() {
