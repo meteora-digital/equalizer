@@ -66,6 +66,23 @@ When you create a new Equalizer, you need to pass 3 arguments
 | identifiers | The identifiers is a string of comma separated values that are used to match the elements we want to resize. The identifiers can be a selector, or a comma separated list of selectors. The container will be searched for child elements that have a matching identifier within a data-equalize-watch attribute. |
 | rows | The rows is a boolean that determines whether we want to resize the elements in rows or not. If not all elements will be the same height regardless of their position on the page. |
 
+## Events
+
+You can call an `on` method on the Equalizer instance to listen for events.
+
+```es6
+equalizer.on('resize', () => {
+    console.log('resize');
+});
+```
+
+| Event | Description |
+|-------|-------------|
+| resize | This event is fired when the Equalizer is resized. |
+| beforeResize | This event is fired before the Equalizer is resized |
+| update | This event is fired when the Equalizer is updated. |
+| beforeUpdate | This event is fired before the Equalizer is updated. |
+
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
 

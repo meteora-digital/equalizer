@@ -2,6 +2,8 @@ export default class Equalizer {
   constructor(options = {}) {
     // A cache to stop endless loops
     this.cache = { width: null };
+    // Store the events here
+    this.events = {};
     // The resize observer
     this.observer = new ResizeObserver((entries) => {
       // If the width has definitely changed, call the resize method
@@ -9,6 +11,7 @@ export default class Equalizer {
         (this.settings.rows) ? this.update() : this.resize();
       };
     });
+
     // The elements that are being resized
     this.identifiers = {};
     // A timeout throttle
@@ -49,6 +52,8 @@ export default class Equalizer {
 
       return y;
     }
+
+    this.beforeUpdate();
 
     // If the user has specified an array of identifiers, add them to the elements object
     if (this.settings.identifiers.length) {
@@ -106,6 +111,8 @@ export default class Equalizer {
       }
     }
 
+    this.callback('resize');
+
     // Call the resize method
     this.resize();
   }
@@ -114,6 +121,8 @@ export default class Equalizer {
     clearTimeout(this.timeout['resize']);
     // Throttle the resize event
     this.timeout['resize'] = setTimeout(() => {
+      this.beforeResize();
+
       // Set the width to the current width
       this.cache.width = this.settings.container.clientWidth;
 
@@ -160,5 +169,29 @@ export default class Equalizer {
         }
       }
     }, 50);
+
+    this.callback('resize');
+  }
+
+  beforeResize() {
+    this.callback('beforeResize');
+  }
+
+  beforeUpdate() {
+    this.callback('beforeUpdate');
+  }
+
+  callback(type, data = false) {
+    // run the callback functions
+    if (this.events[type]) this.events[type].forEach((event) => event(data));
+  }
+
+  on(event, func) {
+    // If we loaded an event and it's not the on event and we also loaded a function
+    if (event && event != 'on' && event != 'callback' && this[event] && func && typeof func == 'function') {
+      if (this.events[event] == undefined) this.events[event] = [];
+      // Push a new event to the event array
+      this.events[event].push(func);
+    }
   }
 }
