@@ -4,8 +4,10 @@ export default class Equalizer {
     this.cache = { width: null };
     // Store the events here
     this.events = {};
+    // A mutation observer to watch for changes to the DOM
+    this.MutationObserver = new MutationObserver(() => this.update());
     // The resize observer
-    this.observer = new ResizeObserver((entries) => {
+    this.ResizeObserver = new ResizeObserver((entries) => {
       // If the width has definitely changed, call the resize method
       if (this.cache.width !== this.settings.container.clientWidth) {
         (this.settings.rows) ? this.update() : this.resize();
@@ -31,12 +33,18 @@ export default class Equalizer {
       }
     }
 
+    // Observe the container for changes to the DOM
+    this.MutationObserver.observe(this.settings.container, {
+      childList: true,
+      subtree: true,
+    });
+
     // Update the elements we need to be watching
     this.update();
 
     // If the user has specified a container, add it to the observer
     if (this.settings.container) {
-      this.observer.observe(this.settings.container);
+      this.ResizeObserver.observe(this.settings.container);
     }
   }
 

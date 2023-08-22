@@ -18,8 +18,12 @@ var Equalizer = /*#__PURE__*/function () {
     };
     // Store the events here
     this.events = {};
+    // A mutation observer to watch for changes to the DOM
+    this.MutationObserver = new MutationObserver(function () {
+      return _this.update();
+    });
     // The resize observer
-    this.observer = new ResizeObserver(function (entries) {
+    this.ResizeObserver = new ResizeObserver(function (entries) {
       // If the width has definitely changed, call the resize method
       if (_this.cache.width !== _this.settings.container.clientWidth) {
         _this.settings.rows ? _this.update() : _this.resize();
@@ -46,12 +50,18 @@ var Equalizer = /*#__PURE__*/function () {
       }
     }
 
+    // Observe the container for changes to the DOM
+    this.MutationObserver.observe(this.settings.container, {
+      childList: true,
+      subtree: true
+    });
+
     // Update the elements we need to be watching
     this.update();
 
     // If the user has specified a container, add it to the observer
     if (this.settings.container) {
-      this.observer.observe(this.settings.container);
+      this.ResizeObserver.observe(this.settings.container);
     }
   }
   _createClass(Equalizer, [{
