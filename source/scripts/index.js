@@ -36,7 +36,6 @@ export default class Equalizer {
     // Observe the container for changes to the DOM
     this.MutationObserver.observe(this.settings.container, {
       childList: true,
-      subtree: true,
     });
 
     // Update the elements we need to be watching

@@ -52,8 +52,7 @@ var Equalizer = /*#__PURE__*/function () {
 
     // Observe the container for changes to the DOM
     this.MutationObserver.observe(this.settings.container, {
-      childList: true,
-      subtree: true
+      childList: true
     });
 
     // Update the elements we need to be watching
