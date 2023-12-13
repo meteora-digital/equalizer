@@ -160,7 +160,7 @@ export default class Equalizer {
                 // Set the element height to auto
                 element.style.height = 'auto';
                 // If the element is taller than the current height, set the height to the new height
-                if (element.offsetHeight > height) height = element.offsetHeight;
+                if (element.offsetHeight > height) height = Math.ceil(element.offsetHeight);
               }
 
               if (this.settings.rows === true) {
