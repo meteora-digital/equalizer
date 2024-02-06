@@ -4,16 +4,6 @@ export default class Equalizer {
     this.cache = { width: null };
     // Store the events here
     this.events = {};
-    // A mutation observer to watch for changes to the DOM
-    this.MutationObserver = new MutationObserver(() => this.update());
-    // The resize observer
-    this.ResizeObserver = new ResizeObserver((entries) => {
-      // If the width has definitely changed, call the resize method
-      if (this.cache.width !== this.settings.container.clientWidth) {
-        (this.settings.rows) ? this.update() : this.resize();
-      };
-    });
-
     // The elements that are being resized
     this.identifiers = {};
     // A timeout throttle
@@ -24,6 +14,8 @@ export default class Equalizer {
       container: null,
       identifiers: '',
       rows: false,
+      throttle: 0,
+      debounce: 100,
     };
 
     // Merge the default settings with the user settings
@@ -32,6 +24,20 @@ export default class Equalizer {
         this.settings[key] = options[key];
       }
     }
+
+    // A mutation observer to watch for changes to the DOM
+    this.MutationObserver = new MutationObserver(() => this.update());
+    // The resize observer
+    this.ResizeObserver = new ResizeObserver((entries) => {
+      // If the width has definitely changed, call the resize method
+      if (this.cache.width !== this.settings.container.clientWidth) {
+        clearTimeout(this.timeout['ResizeObserver']);
+
+        this.timeout['ResizeObserver'] = setTimeout(() => {
+          (this.settings.rows) ? this.update() : this.resize();
+        }, this.settings.debounce);
+      };
+    });
 
     // Observe the container for changes to the DOM
     this.MutationObserver.observe(this.settings.container, {
@@ -125,10 +131,10 @@ export default class Equalizer {
 
       // Call the resize method
       this.resize(0);
-    }, 100);
+    }, this.settings.throttle);
   }
 
-  resize(timeout = 100) {
+  resize(timeout = this.settings.throttle) {
     clearTimeout(this.timeout['resize']);
 
 
@@ -157,15 +163,22 @@ export default class Equalizer {
               // Loop through the elements in the row
               for (let index = 0; index < row.length; index++) {
                 const element = row[index];
+
                 // Set the element height to auto
                 element.style.height = 'auto';
+
                 // If the element is taller than the current height, set the height to the new height
                 if (element.offsetHeight > height) height = Math.ceil(element.offsetHeight);
               }
 
               if (this.settings.rows === true) {
                 // Set the height of the row
-                for (let index = 0; index < row.length; index++) row[index].style.height = height + 'px';
+                for (let index = 0; index < row.length; index++) {
+                  const element = row[index];
+                  // If the element's offsetHeight is different to the height, set the height
+                  // if (element.offsetHeight !== height) element.style.height = height + 'px';
+                  element.style.height = height + 'px';
+                };
               }
             }
           }
@@ -176,7 +189,12 @@ export default class Equalizer {
               if (Object.hasOwnProperty.call(rows, offset)) {
                 const row = rows[offset];
                 // Set the height of the row
-                for (let index = 0; index < row.length; index++) row[index].style.height = height + 'px';
+                for (let index = 0; index < row.length; index++) {
+                  const element = row[index];
+                  // If the element's offsetHeight is different to the height, set the height
+                  // if (element.offsetHeight !== height) element.style.height = height + 'px';
+                  element.style.height = height + 'px';
+                };
               }
             }
           }
