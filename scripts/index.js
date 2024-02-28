@@ -18,7 +18,7 @@ export default class Equalizer {
       debounce: 100,
       mutations: {
         childList: true,
-        subTree: false,
+        subtree: false,
       }
     };
 
