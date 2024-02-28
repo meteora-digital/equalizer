@@ -1,6 +1,6 @@
 {
   "name": "@meteora-digital/equalizer",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "An es6 class to equalize the heights of HTML elements.",
   "main": "dist/index.js",
   "scripts": {
