@@ -1,5 +1,5 @@
 export default class Equalizer {
-  constructor(options = {}) {
+  constructor(options = {}, ) {
     // A cache to stop endless loops
     this.cache = { width: null };
     // Store the events here
@@ -16,6 +16,10 @@ export default class Equalizer {
       rows: false,
       throttle: 0,
       debounce: 100,
+      mutations: {
+        childList: true,
+        subTree: false,
+      }
     };
 
     // Merge the default settings with the user settings
@@ -40,9 +44,7 @@ export default class Equalizer {
     });
 
     // Observe the container for changes to the DOM
-    this.MutationObserver.observe(this.settings.container, {
-      childList: true,
-    });
+    this.MutationObserver.observe(this.settings.container, this.settings.mutations);
 
     // Update the elements we need to be watching
     this.update();

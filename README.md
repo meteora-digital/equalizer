@@ -43,7 +43,7 @@ import Equalizer from '@meteora-digital/equalizer';
 
 document.addEventListener('DOMContentLoaded', () => {
     const equalizers = document.querySelectorAll('[data-equalize]');
-    
+
     for (let index = 0; index < equalizers.length; index++) {
         const container = equalizers[index];
 
@@ -65,6 +65,11 @@ When you create a new Equalizer, you need to pass 3 arguments
 | container | The container is the element that is holding the items we want to resize |
 | identifiers | The identifiers is a string of comma separated values that are used to match the elements we want to resize. The identifiers can be a selector, or a comma separated list of selectors. The container will be searched for child elements that have a matching identifier within a data-equalize-watch attribute. |
 | rows | The rows is a boolean that determines whether we want to resize the elements in rows or not. If not all elements will be the same height regardless of their position on the page. |
+| throttle | The throttle is a number that determines how often the equalizer will check for changes per update(). The default is 0. |
+| debounce | The debounce is a number that determines how long the equalizer will wait after the last resize event before updating. The default is 100. |
+| mutations | Settings that will be injected into the MutationObserver. The default is { childList: true, subtree: false } |
+
+```es6
 
 ## Events
 
@@ -86,5 +91,4 @@ equalizer.on('resize', () => {
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
 
-# 
-
+#
